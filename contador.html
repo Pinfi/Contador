@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="estilo.css">
+    <title>Cuenta Atras</title>
+</head>
+
+<body>
+    <div id='contenedor' class="contenedor"></div>
+
+
+</body>
+
+<script>
+
+    //tomamos el div del contenedor del html del cual partiremos
+    let contenedor = document.getElementById('contenedor');
+
+    //Ponemos un div para el enunciado que mostrara la fecha a la cual estamos haciendo cuenta regresiva
+    let enunciado = document.createElement('div');
+    enunciado.setAttribute('class', 'enunciado');
+
+    //Creamos una tabla que contendra los datos de la cuenta atras
+    let tabla = document.createElement('table');
+
+    //Seccion de los nombres en la tabla
+    let filaNombres = document.createElement('tr');
+    let tablaMes = document.createElement('td');
+    let tablaDias = document.createElement('td');
+    let tablaHoras = document.createElement('td');
+    let tablaMinutos = document.createElement('td');
+    let tablaSegundos = document.createElement('td');
+
+    filaNombres.setAttribute('class', 'tablafila');
+
+    tablaMes.innerHTML = 'Meses';
+    tablaDias.innerHTML = 'Dias';
+    tablaHoras.innerHTML = 'Horas';
+    tablaMinutos.innerHTML = 'Minutos';
+    tablaSegundos.innerHTML = 'Segundos';
+
+    //Los introducimos en la parte superior de la tabla
+    filaNombres.append(tablaMes, tablaDias, tablaHoras, tablaMinutos, tablaSegundos);
+
+    //Hacemos la seccion de las fechas
+    let filaFechas = document.createElement('tr');
+    let tablaMesfecha = document.createElement('td');
+    let tablaDiasfecha = document.createElement('td');
+    let tablaHorasfecha = document.createElement('td');
+    let tablaMinutosfecha = document.createElement('td');
+    let tablaSegundosfecha = document.createElement('td');
+
+    filaFechas.setAttribute('class', 'tablafechas');
+
+    //Introducimos la parte de las fechas en la parte inferior de la tabla
+    filaFechas.append(tablaMesfecha, tablaDiasfecha, tablaHorasfecha, tablaMinutosfecha, tablaSegundosfecha);
+
+    //Introducimos los nombres y las fechas a la tabla central
+    tabla.append(filaNombres, filaFechas);
+
+    //Creamos el input para introducir la fecha
+    let inputFecha = document.createElement('input');
+    inputFecha.setAttribute('id', 'inputFecha');
+    inputFecha.setAttribute('type', 'datetime');
+    inputFecha.setAttribute('placeholder', 'Introduzca una fecha');
+
+    //Creamos el boton para que nos cambie la fecha segun lo introducido en el input
+    let boton = document.createElement('button');
+    boton.setAttribute('id', 'boton');
+    boton.onclick = actualizarContador;
+    boton.innerHTML = 'Cambiar Fecha';
+
+    //Introducimos el enunciado, la tabla con los nombres y las fechas, el input y el boton
+    contenedor.append(enunciado, tabla, inputFecha, boton);
+
+    //Ponemos una fecha para comenzar
+    let endDate = new Date('2024-12-25 00:00:00');
+
+    //Funcion que se aplica al pulsar el boton e intenta cambiar la fecha
+    function actualizarContador() {
+        let inputIntro = document.getElementById('inputFecha');
+
+        if (Date.parse(inputIntro.value)) {
+            endDate = new Date(inputIntro.value)
+        } else {
+            alert("No Ha introducido una fecha correctamente pruebe el formato YYYY-MM-DD HH:MM:SS")
+        }
+
+        updateClock();
+
+    }
+
+
+    // Función para calcular la diferencia entre la fecha actual y la fecha de finalización
+    function calculateTimeRemaining() {
+
+        const now = new Date();
+        const diff = endDate - now;
+
+        //Iniciamos los datos a cero para posteriormente comprobar que si la diferencia es negativa todo se quede a 0
+        let month = 0;
+        let days = 0;
+        let hours = 0;
+        let minutes = 0;
+        let seconds = 0;
+
+        if (diff > 0) {
+            month = Math.floor(diff / (1000 * 60 * 60 * 24 * 30));
+            days = Math.floor((diff % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));
+            hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        }
+
+        //Creamos el mensaje que sale en el enunciado (Al mes hay que añadirle 1)
+        let fechaFinalMes = endDate.getMonth() + 1;
+        enunciado.innerHTML = 'Para la fecha ' + endDate.getDate() + '/' + fechaFinalMes + '/' + endDate.getFullYear() + ' a las ' + endDate.getHours() + ':' + endDate.getMinutes() + 'h quedan:';
+        
+        //Ponemos el estilo segun la cantidad de dias que queden
+        seleccionaEstilo(diff);
+
+        return { month, days, hours, minutes, seconds };
+    }
+
+    //Funcion que aplica los estilos diferentes segun cuanto tiempo quede para la fecha marcada
+    function seleccionaEstilo(diff) {
+        if (diff < 604800000) {
+            tabla.setAttribute('class', 'tablaroja');
+        } else if (diff < 1296000000) {
+            tabla.setAttribute('class', 'tablanaranja');
+        } else {
+            tabla.setAttribute('class', 'tablaverde');
+        }
+    }
+
+
+    // Función para actualizar el conteo cada segundo
+    function updateClock() {
+        //Calculamos los datos de cuanto queda
+        const timeRemaining = calculateTimeRemaining();
+
+        //Escribimos el contenido de lo que queda
+        tablaMesfecha.innerHTML = `${timeRemaining.month}`;
+        tablaDiasfecha.innerHTML = `${timeRemaining.days}`;
+        tablaHorasfecha.innerHTML = `${timeRemaining.hours}`;
+        tablaMinutosfecha.innerHTML = `${timeRemaining.minutes}`;
+        tablaSegundosfecha.innerHTML = `${timeRemaining.seconds}`;
+
+        //Actualizamos cada segundo
+        setTimeout(updateClock, 1000);
+    }
+
+    // Inicializar la cuenta atrás
+    updateClock()
+
+
+
+
+
+
+
+</script>
+
+</html>

@@ -1,0 +1,43 @@
+*{
+
+}
+.contenedor{
+    display: grid;
+    width: 700px;
+    margin: auto;
+    margin-top: 15%;
+    font-size: 2rem;
+    text-align: center;
+    background-color: rgb(139, 175, 233);
+    box-shadow: 0 0 10px grey;
+    border-radius: 10px;
+}
+.enunciado{
+    justify-content: center;
+    margin-top: 15px;;
+    
+
+}
+#inputFecha{
+    justify-self: center;
+    text-align: center;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    width: 60%;
+}
+#boton{
+    margin-bottom: 15px;
+    width: 40%;
+    justify-self: center;
+}
+.tablaverde{
+    color: green;;
+}
+.tablanaranja{
+    color: orange;;
+}
+.tablaroja{
+    color: red;;
+}
+
+
